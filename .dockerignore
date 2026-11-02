@@ -1,0 +1,11 @@
+target/
+.git/
+.github/
+.devcontainer/
+.idea/
+.vscode/
+*.iml
+infra/
+samples/
+*.md
+.env
