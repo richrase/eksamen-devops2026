@@ -30,27 +30,27 @@
       env:
         AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
         AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-        AWS_DEFAULT_REGION: eu-west-1  
-        steps:
-          - name: checkout the repo
-            uses: actions/checkout@v4
+        AWS_DEFAULT_REGION: eu-west-1
+      steps:
+        - name: checkout the repo
+          uses: actions/checkout@v4
 
-          - name: setup for terraform
-            uses: hashicorp/setup-terraform@v3
+        - name: setup for terraform
+          uses: hashicorp/setup-terraform@v3
 
-          - name: terraform fmt
-            working-directory: infra
-            uses: terraform fmt -Check
+        - name: terraform fmt
+          working-directory: infra
+          run: terraform fmt -check
 
-          - name: terraform init
-            working-directory: infra
-            uses: terraform init
+        - name: terraform init
+          working-directory: infra
+          run: terraform init
 
-          - name: terraform apply
-            working-directory: infra
-            run: |
-              rev=$(git rev-parse --short HEAD)
-              terraform apply -auto-approve -var"candidate=2" -var="image_tag=$rev"
+        - name: terraform apply
+          working-directory: infra
+          run: |
+            rev=$(git rev-parse --short HEAD)
+            terraform apply -auto-approve -var="candidate=2" -var="image_tag=$rev"
 
 
 
