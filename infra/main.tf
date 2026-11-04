@@ -2,7 +2,6 @@ locals {
   service_name = "wishifai-${var.candidate}"
 }
 
-# --- S3: lagring av opplastede bilder ---------------------------------------
 
 resource "aws_s3_bucket" "images" {
   bucket = "wishifai-uploads-${var.candidate}"
@@ -16,7 +15,6 @@ resource "aws_s3_bucket_public_access_block" "images" {
   restrict_public_buckets = true
 }
 
-# --- IAM: task role (ikke execution role) -----------------------------------
 
 data "aws_iam_policy_document" "task_assume" {
   statement {
@@ -67,14 +65,12 @@ resource "aws_iam_role_policy" "task" {
   policy = data.aws_iam_policy_document.task_permissions.json
 }
 
-# --- Logging ----------------------------------------------------------------
 
 resource "aws_cloudwatch_log_group" "app" {
   name              = "/ecs/${local.service_name}"
   retention_in_days = 14
 }
 
-# --- ECS Express ------------------------------------------------------------
 
 resource "aws_ecs_express_gateway_service" "app" {
   service_name            = local.service_name
@@ -101,6 +97,5 @@ resource "aws_ecs_express_gateway_service" "app" {
     }
   }
 
-  # Hindrer at policyen fjernes før tjenesten er slettet (ellers kan den henge i DRAINING)
   depends_on = [aws_iam_role_policy.task]
 }
