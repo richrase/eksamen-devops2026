@@ -17,19 +17,19 @@ resource "aws_iam_role" "task" {
 data "aws_iam_policy_document" "task_permissions" {
   statement {
     sid       = "S3Images"
-    actions   = ["s3:PutObject", "s3:GetObject", "s3:ListBucket"]
+    actions   = ["s3:PutObject"]
     resources = [aws_s3_bucket.images.arn, "${aws_s3_bucket.images.arn}/*"]
   }
 
   statement {
     sid       = "Rekognition"
-    actions   = ["rekognition:DetectLabels", "rekognition:DetectText", "rekognition:DetectFaces"]
+    actions   = ["rekognition:DetectLabels"]
     resources = ["*"]
   }
 
   statement {
     sid       = "Bedrock"
-    actions   = ["bedrock:InvokeModel", "bedrock:InvokeModelWithResponseStream"]
+    actions   = ["bedrock:InvokeModel"]
     resources = ["*"]
   }
 

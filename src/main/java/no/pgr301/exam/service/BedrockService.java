@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import io.micrometer.core.instrument.MeterRegistry;
 import io.micrometer.core.instrument.Timer;
 import no.pgr301.exam.model.GiftAnalysis;
-import no.pgr301.exam.model.GiftSuggestion;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import software.amazon.awssdk.services.bedrockruntime.BedrockRuntimeClient;
@@ -114,8 +113,8 @@ public class BedrockService {
         } catch (Exception e) {
             return new GiftAnalysis(
                     "(ukjent)",
-                    "(kunne ikke parse svar)",
-                    List.of(new GiftSuggestion("(ukjent format)", text))
+                    "(kunne ikke parse svar) " + text,
+                    List.of()
             );
         }
     }
