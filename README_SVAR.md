@@ -6,7 +6,7 @@ Kandidatnummer: 2
 
 ### 1A — Containerisér Spring Boot-applikasjonen
 
-Jeg har laget en multi-stage `Dockerfile`. Første steg bygger JAR-filen med Maven, og andre steg kopierer bare JAR-filen inn i et image. Ting som Maven, JDK og kildekoden blir med i det ferdige imaget, så det blir mindre og har færre ting som kan utnyttes.(Programmet blir mer lettvektig)
+Jeg har laget en multi-stage `Dockerfile`. Første steg bygger JAR-filen med Maven, og andre steg kopierer bare JAR-filen inn i et image. Ting som Maven, JDK og kildekoden blir med i det ferdige imaget, så det blir mindre og har færre ting som kan utnyttes (programmet blir mer lettvektig).
 
 Bygg og kjør fra repo-rot:
 
@@ -23,23 +23,23 @@ curl http://localhost:9999/actuator/health
 
 ### 1B - CI-pipeline
 
-Workflow-filen ligger i `.github/workflows/docker.yml` og kjører bare ved push til main. (Merk at jeg endret navnet på denne filen fra ecr.yml til docker.yml i ettertid)
+Workflow-filen ligger i `.github/workflows/docker.yml` og kjører bare ved push til main (merk at jeg endret navnet på denne filen fra ecr.yml til docker.yml i ettertid).
 
 Grønn kjøring: https://github.com/richrase/eksamen-devops2026/actions/runs/41548349004
 
-Først kjører `mvn test`, og deretter bygger imaget og pusher det til ECR-repoet wishifai-2. Byggejobben er avhengig av testene går gjennom (merk at det ikke er noen tester i oppgaven, så denne delen bare kjører grønt uansett så lenge koden compiler), så imaget blir ikke publisert hvis testene feiler.
+Først kjører `mvn test`, og deretter bygger imaget og pusher det til ECR-repoet wishifai-2. Byggejobben er avhengig av at testene går gjennom (merk at det ikke er noen tester i oppgaven, så denne delen bare kjører grønt uansett så lenge koden compiler), så imaget blir ikke publisert hvis testene feiler.
 
-De dyrbare AWS-nøklene ligger som GitHub Secrets og står ikke i workflow-filen. ECR-repoet opprettet jeg manuelt i CLI.
+De dyrebare AWS-nøklene ligger som GitHub Secrets og står ikke i workflow-filen. ECR-repoet opprettet jeg manuelt i CLI.
 
-Tagging strategien: hvert image får to tagger, kort commit-SHA (f.eks 0fc6572) og lateest.
+Tagging-strategien: hvert image får to tagger, kort commit-SHA (f.eks 0fc6572) og lateest.
 
-Jeg valgte commit-SHA fordi den er unik for hver commit. Da kan jeg se nøyaktig hvilken kode som kjører, og jeg kan rulle tilbake ved å peke på en eldre SHA. Den kommer rett fra Git, så det er ikke noe versjonsnummer jeg kan glemme. Terraform får også SHA-en inn som image-tag, så hver commit gir en ny verdi og dermed en ny kjøring. latest er bare med for at det skal være enkelt å teste lokalt. Alene holder den ikke, fordi den flyttes ved hver push, og da vet man ikke hvilken versjon som faktisk kjører. Så matcher med taggingen med commit sha-en. 
+Jeg valgte commit-SHA fordi den er unik for hver commit. Da kan jeg se nøyaktig hvilken kode som kjører, og jeg kan rulle tilbake ved å peke på en eldre SHA. Den kommer rett fra Git, så det er ikke noe versjonsnummer jeg kan glemme. Terraform får også SHA-en inn som image-tag, så hver commit gir en ny verdi og dermed en ny kjøring. Latest er bare med for at det skal være enkelt å teste lokalt. Alene holder den ikke, fordi den flyttes ved hver push, og da vet man ikke hvilken versjon som faktisk kjører. Så matcher taggingen med commit sha-en. 
 
 ## Oppgave 2 - ECS Express med Terraform (25p)
 
 ### 2A - Infrastruktur for tjenesten
 
-All Terraformkoden ligger i `infra/`. Den oppretter en ECS Express-tjeneste, en S3-bucket for bildene og en taskrole
+All Terraformkoden ligger i `infra/`. Den oppretter en ECS Express-tjeneste, en S3-bucket for bildene og en taskrole.
 
 Offentlig URL: https://wi-30706d5f6c3441398601ceb06075021f.ecs.eu-west-1.on.aws
 
@@ -53,7 +53,7 @@ Litt om valgene jeg har gjort:
 - Region, kandidatnummer og image-tag er variabler. Region har eu-west-1 som standard. De to andre har ingen standardverdi, så de må oppgis hver gang.
 - Alle ressurser har kandidatnummeret i navnet, så de ikke kolliderer med andre i klassens konto.
 - Bucketen heter wishifai-uploads-2 og er privat. S3_BUCKET settes automatisk fra bucketen Terraform lager, så navnet står bare ett sted.
-- Task role heter wishifai-task-role-2 og er opprettet i Terraform. Den har bare det appen trenger, skrive til egen bucket, DetectLabels i Rekognition, InvokeModel i Bedrock og PutMetricData til CloudWatch.
+- Task role heter wishifai-task-role-2 og er opprettet i Terraform. Den har bare det appen trenger, skriver til egen bucket, DetectLabels i Rekognition, InvokeModel i Bedrock og PutMetricData til CloudWatch.
 - Tjenesten kjører på port 8080 med health check mot `/actuator/health`.
 
 ### 2B - Remote state
